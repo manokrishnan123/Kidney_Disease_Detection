@@ -1,0 +1,22 @@
+tensorflow
+pandas
+dvc
+numpy<1.25.0
+matplotlib
+notebook
+seaborn
+python-box[all]~=7.0
+pyYAML
+tqdm
+ensure==1.0.2
+joblib
+types-pyYAML
+scipy
+Flask
+Flask-Cors
+black>=22.3.0
+fsspec==2023.4.0
+FuzzyTM>=0.4.0
+blosc2~=2.0.0
+cython>=0.29.21
+-e .

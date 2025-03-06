@@ -25,6 +25,8 @@ setuptools.setup(
         "Documentation": f"https://github.com/{AUTHOR_USERNAME}/{SRC_REPO}/docs",
         "Source Code": f"https://github.com/{AUTHOR_USERNAME}/{SRC_REPO}/tree/main",
     },
-    package_dir={"": "src"},
-    packages = setuptools.find_packages(where="src")
+    package_dir={"": "."},  # Tells Python to look in the root directory
+    packages=setuptools.find_packages(where="."),
+
+
 )    

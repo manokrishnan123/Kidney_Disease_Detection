@@ -33,3 +33,23 @@ class ConfigurationManager:
         )
 
         return data_ingestion_config
+    
+    def get_prepare_base_model_config(self) -> PrepareBaseModelConfig:
+        if "prepare_model" not in self.config:
+            raise KeyError("Key 'prepare_model' is missing from config.yaml!")
+        config = self.config.prepare_model
+        
+        create_directories([config.root_dir])
+
+        prepare_base_model_config = PrepareBaseModelConfig(
+        root_dir=Path(config.root_dir),
+        base_model_path=Path(config.base_model_path),
+        updated_base_model_path=Path(config.updated_base_model_path),
+        params_image_size=[256, 256, 3],  # Updated for custom CNN
+        params_learning_rate=self.params.LEARNING_RATE,
+        params_include_top=False,  # Not needed for custom CNN
+        params_weights=None,  # No pre-trained weights for custom CNN
+        params_classes=self.params.CLASSES
+    )
+
+        return prepare_base_model_config

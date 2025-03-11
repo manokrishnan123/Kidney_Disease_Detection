@@ -53,3 +53,33 @@ class ConfigurationManager:
     )
 
         return prepare_base_model_config
+
+
+    def get_training_config(self) -> TrainingConfig:
+        training = self.config.training
+
+        # ✅ Check for 'prepare_model' instead of 'prepare_base_model'
+        if "prepare_model" not in self.config:
+            raise KeyError("Key 'prepare_model' is missing from config.yaml!")
+
+        prepare_model = self.config.prepare_model  # ✅ Updated reference
+        params = self.params
+
+        training_data = Path(training.training_data)
+
+        create_directories([Path(training.root_dir)])
+
+        training_config = TrainingConfig(
+            root_dir=Path(training.root_dir),
+            trained_model_path=Path(training.trained_model_path),
+            updated_base_model_path=Path(prepare_model.base_model_path),  # ✅ Updated reference
+            training_data=training_data,
+            params_epochs=params.EPOCHS,
+            params_batch_size=params.BATCH_SIZE,
+            params_is_augmentation=params.AUGMENTATION,
+            params_image_size=params.IMAGE_SIZE,
+            log_dir=Path(training.log_dir)
+        )
+
+        return training_config
+

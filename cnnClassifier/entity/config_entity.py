@@ -35,8 +35,7 @@ class TrainingConfig:
     params_is_augmentation: bool
     params_image_size: list
     log_dir: Path
-
-
+    
 
 @dataclass(frozen=True)
 class EvaluationConfig:

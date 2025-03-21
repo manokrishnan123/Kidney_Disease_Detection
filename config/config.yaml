@@ -16,5 +16,5 @@ prepare_model:
 training:
   root_dir: artifacts/training
   trained_model_path: artifacts/training/model.h5
-  training_data: artifacts/data_ingestion/Kidney Stone Dataset/Augmented Dataset
+  training_data: artifacts/data_ingestion/Kidney Stone Dataset/
   log_dir: logs/runtime_logs.log

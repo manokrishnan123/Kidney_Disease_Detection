@@ -1,8 +1,6 @@
 AUGMENTATION: True
 IMAGE_SIZE: [256, 256, 3] # Updated for custom CNN
-BATCH_SIZE: 16
-INCLUDE_TOP: False
-EPOCHS: 1
+BATCH_SIZE: 32  # 🔹 Increased for efficiency (reduce if memory is an issue)
+EPOCHS: 40  # ✅ Keep it at 50 with Early Stopping
 CLASSES: 2
-WEIGHTS: imagenet
-LEARNING_RATE: 0.01
+LEARNING_RATE: 0.00005  # 🔹 Lowered for stable training

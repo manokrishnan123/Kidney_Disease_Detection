@@ -82,4 +82,5 @@ class ConfigurationManager:
         )
 
         return training_config
-
+        
+    

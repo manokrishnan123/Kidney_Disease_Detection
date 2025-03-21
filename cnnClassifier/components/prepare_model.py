@@ -1,25 +1,34 @@
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
+from tensorflow.keras.layers import BatchNormalization, Activation
 from pathlib import Path
 from cnnClassifier.entity.config_entity import PrepareBaseModelConfig
+from cnnClassifier.logger import logger  # Import your custom logger
 
 class PrepareBaseModel:
     def __init__(self, config: PrepareBaseModelConfig):
         self.config = config
 
     def get_base_model(self):
-        """Defines and saves the custom CNN model."""
+        """Defines and saves the improved custom CNN model."""
         model = Sequential([
-            Conv2D(16, (3,3), activation='relu', input_shape=(256,256,3)),
+            Conv2D(32, (3,3), activation='relu', input_shape=(256,256,3)),
+            BatchNormalization(),  
             MaxPooling2D(),
-            Conv2D(32, (3,3), activation='relu'),
+
+            Conv2D(64, (3,3), activation='relu'),
+            BatchNormalization(),
             MaxPooling2D(),
-            Conv2D(16, (3,3), activation='relu'),
+
+            Conv2D(128, (3,3), activation='relu'),
+            BatchNormalization(),
             MaxPooling2D(),
+
             Flatten(),
-            Dense(256, activation='relu'),
-            Dense(1, activation='sigmoid')
+            Dense(256, activation='relu', kernel_initializer="he_normal"),
+            Dropout(0.5),  
+            Dense(1, activation='sigmoid')  # Binary classification
         ])
         
         model.compile(
@@ -28,13 +37,13 @@ class PrepareBaseModel:
             metrics=['accuracy']
         )
 
+        # ✅ Save the model using the newly added method
         self.save_model(path=self.config.base_model_path, model=model)
 
-   ## def update_base_model(self):
-        #"""Loads and saves the model (if needed)."""
-        #model = tf.keras.models.load_model(self.config.base_model_path)
-        #self.save_model(path=self.config.updated_base_model_path, model=model)
-
-    @staticmethod
-    def save_model(path: Path, model: tf.keras.Model):
+    def save_model(self, path: Path, model: tf.keras.Model):
+        """Save the trained model to a given path."""
         model.save(path)
+        logger.info(f"Model saved successfully at: {path}")
+
+            
+            

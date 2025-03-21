@@ -19,8 +19,8 @@ class PrepareBaseModelTrainingPipeline:
         logger.info("Custom CNN model created successfully.")
 
         # Save the updated model
-        prepare_base_model.update_base_model()
-        logger.info("Custom CNN model saved successfully.")
+        #prepare_base_model.update_base_model()
+       # logger.info("Custom CNN model saved successfully.")
 
 if __name__ == '__main__':
     try:

@@ -37,11 +37,19 @@ class TrainingConfig:
     log_dir: Path
     
 
-@dataclass(frozen=True)
+'''@dataclass(frozen=True)
 class EvaluationConfig:
     path_of_model: Path
     training_data: Path
     all_params: dict
     mlflow_uri: str
+    params_image_size: list
+    params_batch_size: int'''
+    
+@dataclass(frozen=True)
+class EvaluationConfig:
+    root_dir: Path
+    trained_model_path: Path
+    training_data: Path
     params_image_size: list
     params_batch_size: int

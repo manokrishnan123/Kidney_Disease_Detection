@@ -83,4 +83,19 @@ class ConfigurationManager:
 
         return training_config
         
+        
+    def get_evaluation_config(self) -> EvaluationConfig:
+        training_config = self.config.training
+        eval_config = self.config.model_evaluation
+
+        create_directories([Path(eval_config.root_dir)])
+
+        evaluation_config = EvaluationConfig(
+            root_dir=Path(eval_config.root_dir),
+            trained_model_path=Path(training_config.trained_model_path),
+            training_data=Path(training_config.training_data),
+            params_image_size=self.params.IMAGE_SIZE,
+            params_batch_size=self.params.BATCH_SIZE
+        )
+        return evaluation_config    
     

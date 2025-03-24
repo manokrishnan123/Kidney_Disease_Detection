@@ -35,6 +35,7 @@ class TrainingConfig:
     params_is_augmentation: bool
     params_image_size: list
     log_dir: Path
+    params_learning_rate: float
     
 
 '''@dataclass(frozen=True)

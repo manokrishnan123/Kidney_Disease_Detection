@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kidney Disease Detection</title>
+
+  <!-- Bootstrap & Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fc;
+      font-family: 'Inter', sans-serif;
+    }
+    .iupload h3 {
+      color: #1b2d6b;
+      font-size: 30px;
+      font-weight: 700;
+    }
+    .image-part {
+      height: 300px;
+      width: 300px;
+      border: 1px solid #1b2d6b;
+      position: relative;
+      margin: auto;
+    }
+    .image-part img,
+    .image-part video {
+      height: 100%;
+      width: 100%;
+      padding: 5px;
+    }
+    #photo {
+      display: none;
+    }
+    .res-part {
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      height: auto;
+    }
+    .jsonRes span {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .jsonRes .icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+    .healthy {
+      color: green;
+    }
+    .disease {
+      color: red;
+    }
+    .btn-part {
+      width: 325px;
+      margin: auto;
+    }
+    #loading {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #007bff;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <section class="iupload">
+      <h3 class="text-center mb-5">Kidney Disease Detection</h3>
+      <div class="row">
+        <!-- Image Section -->
+        <div class="col-md-6 text-center">
+          <div class="image-part">
+            <video autoplay id="video"></video>
+            <img src="" id="photo">
+            <canvas id="canvas" style="display:none;"></canvas>
+          </div>
+          <div class="btn-part mt-4">
+            <form id="upload-data" class="">
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-primary col-5 ml-2 mr-3" id="uload">
+                  <i class="fas fa-upload mr-1"></i>Upload
+                </button>
+                <button id="send" type="button" class="btn btn-outline-success col-5">
+                  <i class="fas fa-magic mr-1"></i>Predict
+                </button>
+              </div>
+              <input type="hidden" class="form-control" id="url" value="../predict" />
+              <input name="upload" type="file" id="fileinput" style="position:absolute;top:-500px;" />
+            </form>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="col-md-6">
+          <h5 class="text-center mb-3 font-weight-bold text-primary">
+            <i class="fas fa-chart-line"></i> Prediction Results
+          </h5>
+          <div class="res-part">
+            <div class="jsonRes"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="loading" style="display:none;"><div class="loader"></div></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    let base_data = "";
+
+    function sendRequest(base64Data) {
+      if (!base64Data) {
+        $(".jsonRes").html("<div class='text-danger'>No image data available.</div>");
+        return;
+      }
+
+      console.log("Sending Base64 Data:", base64Data.slice(0, 100)); // Preview start of base64 string
+      const url = $("#url").val();
+      $("#loading").show();
+
+      $.ajax({
+        url: url,
+        type: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({ image: base64Data }),
+        success: function(res) {
+          console.log("Backend response:", res); // Debug print
+          $(".jsonRes").html("");
+
+          try {
+            const prediction = res[0]?.image || "";
+
+            if (!prediction) {
+              $(".jsonRes").html("<div class='text-warning'>No prediction returned from model.</div>");
+              return;
+            }
+
+            let icon = "<i class='fas fa-exclamation-triangle icon disease'></i>";
+            let cls = "disease";
+
+            if (prediction.toLowerCase().includes("no") || prediction.toLowerCase().includes("healthy")) {
+              icon = "<i class='fas fa-check-circle icon healthy'></i>";
+              cls = "healthy";
+            }
+
+            $(".jsonRes").append(`<span class='${cls}'>${icon} ${prediction}</span>`);
+          } catch (e) {
+            console.error("Error parsing prediction:", e, res);
+            $(".jsonRes").html("<div class='text-danger'>Error parsing prediction result.</div>");
+          }
+
+          $("#loading").hide();
+          $('#send').prop('disabled', false).text('Predict');
+        },
+        error: function(err) {
+          console.error("AJAX error:", err);
+          $(".jsonRes").html("<div class='text-danger'>Error while predicting. Please try again.</div>");
+          $("#loading").hide();
+          $('#send').prop('disabled', false).text('Predict');
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      $('#send').click(function() {
+        $(this).prop('disabled', true).text('Predicting...');
+        sendRequest(base_data);
+      });
+
+      $('#uload').click(() => $('#fileinput').trigger('click'));
+
+      $('#fileinput').change(function() {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const url = e.target.result;
+            const img = new Image();
+            img.onload = function() {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              base_data = canvas.toDataURL('image/jpeg', 1.0).replace(/^data:image.+;base64,/, '');
+              console.log("Base64 image ready.");
+            };
+            img.src = url;
+            $('#photo').attr('src', url).show();
+            $('#video').hide();
+          };
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -78,7 +78,8 @@ class ConfigurationManager:
             params_batch_size=params.BATCH_SIZE,
             params_is_augmentation=params.AUGMENTATION,
             params_image_size=params.IMAGE_SIZE,
-            log_dir=Path(training.log_dir)
+            log_dir=Path(training.log_dir),
+            params_learning_rate=params.LEARNING_RATE
         )
 
         return training_config
@@ -96,6 +97,7 @@ class ConfigurationManager:
             training_data=Path(training_config.training_data),
             params_image_size=self.params.IMAGE_SIZE,
             params_batch_size=self.params.BATCH_SIZE
+            
         )
         return evaluation_config    
     

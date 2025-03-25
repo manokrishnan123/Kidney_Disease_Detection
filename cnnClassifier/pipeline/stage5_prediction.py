@@ -19,8 +19,8 @@ class PredictionPipeline:
         print("Prediction score:", prediction_score)
 
         if prediction_score > 0.5:
-            result = "Stone"
+            result = "Kidney with Stone"
         else:
-            result = "Normal"
+            result = "Normal Kidney without stone"
 
         return [{"image": result}]

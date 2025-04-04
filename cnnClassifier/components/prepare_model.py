@@ -4,40 +4,45 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropou
 from tensorflow.keras.layers import BatchNormalization, Activation
 from pathlib import Path
 from cnnClassifier.entity.config_entity import PrepareBaseModelConfig
-from cnnClassifier.logger import logger  # Import your custom logger
+from cnnClassifier.logger import logger  
 
 class PrepareBaseModel:
     def __init__(self, config: PrepareBaseModelConfig):
         self.config = config
 
     def get_base_model(self):
-        """Defines and saves the improved custom CNN model."""
+        """Defines and saves the custom CNN model."""
         model = Sequential([
-            Conv2D(32, (3,3), activation='relu', input_shape=(256,256,3)),
-            BatchNormalization(),  
-            MaxPooling2D(),
+        # Block 1
+        Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(256, 256, 3)),
+        BatchNormalization(), #stabilization
+        MaxPooling2D(), #downsample feature map
 
-            Conv2D(64, (3,3), activation='relu'),
-            BatchNormalization(),
-            MaxPooling2D(),
+        # Block 2
+        Conv2D(64, (3, 3), padding='same', activation='relu'),
+        BatchNormalization(),
+        MaxPooling2D(),
 
-            Conv2D(128, (3,3), activation='relu'),
-            BatchNormalization(),
-            MaxPooling2D(),
+        # Block 3
+        Conv2D(128, (3, 3), padding='same', activation='relu'),
+        BatchNormalization(),
+        MaxPooling2D(),
+        Dropout(0.3), #prevent overfitting
 
-            Flatten(),
-            Dense(256, activation='relu', kernel_initializer="he_normal"),
-            Dropout(0.5),  
-            Dense(1, activation='sigmoid')  # Binary classification
-        ])
-        
-        model.compile(
-            optimizer=tf.keras.optimizers.Adam(learning_rate=self.config.params_learning_rate),
-            loss='binary_crossentropy',
-            metrics=['accuracy']
-        )
+        # Block 4
+        Conv2D(256, (3, 3), padding='same', activation='relu'),
+        BatchNormalization(),
+        MaxPooling2D(),
+        Dropout(0.4),
 
-        # ✅ Save the model using the newly added method
+        # Dense Classification Head
+        Flatten(),
+        Dense(256, activation='relu', kernel_initializer="he_normal"),
+        Dropout(0.5),
+        Dense(1, activation='sigmoid')  # Binary classification
+    ])
+
+        # Save the model using the newly added method
         self.save_model(path=self.config.base_model_path, model=model)
 
     def save_model(self, path: Path, model: tf.keras.Model):

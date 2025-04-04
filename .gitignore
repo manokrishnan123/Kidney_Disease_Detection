@@ -173,3 +173,4 @@ cython_debug/
 artifacts/
 .dvc/
 .vs/
+inputimage.jpg

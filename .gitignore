@@ -174,4 +174,11 @@ artifacts/
 .dvc/
 .vs/
 inputimage.jpg
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.gif
+*.tiff
+*.svg
 **/*.h5

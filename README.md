@@ -26,7 +26,6 @@ This project implements a Convolutional Neural Network (CNN) based classifier fo
 - Model training with transfer learning using pre-trained CNN architectures
 - Web interface for real-time kidney stone detection
 - Comprehensive model evaluation metrics
-- DVC integration for experiment tracking
 
 ## Installation
 
@@ -39,8 +38,6 @@ This project implements a Convolutional Neural Network (CNN) based classifier fo
    ```
    git clone https://github.com/manokrishnan123/Kidney_Disease_Detection.git
    cd Kidney_Disease_Detection
-   ```
-
    ```
 2. Install the required dependencies:
    ```

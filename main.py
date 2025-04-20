@@ -16,7 +16,6 @@ except Exception as e:
         raise e
     
     
-    
 STAGE_NAME = "Prepare base model"
 try: 
     logger.info(f"*******************")

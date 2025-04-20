@@ -17,13 +17,6 @@ class PredictionPipeline:
 
         prediction_score = model.predict(img_array)[0][0]
         print("Prediction score:", prediction_score)
-
-        '''if prediction_score > 0.5:
-            result = "Kidney with Stone"
-        else:
-            result = "Normal Kidney without stone"
-
-        return [{"image": result}]'''
         
         if prediction_score > 0.9:
             result = "Kidney with Stone"
